@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import tempfile
@@ -13,6 +14,8 @@ from PIL import Image
 from .errors import BackendUnavailableError, RenderFailedError, ValidationError
 from .models import AdjustmentState, SourceImageInfo
 from .pp3 import build_pp3
+
+RAWTHERAPEE_CLI_ENV = "RAWTHERAPEE_CLI"
 
 
 class RenderBackend(Protocol):
@@ -84,8 +87,7 @@ class RawTherapeeBackend:
         self.export_quality = export_quality
 
     def ensure_available(self) -> None:
-        if shutil.which(self.executable) is None:
-            raise BackendUnavailableError(self.executable)
+        self._resolve_executable()
 
     def write_state_file(
         self,
@@ -108,14 +110,20 @@ class RawTherapeeBackend:
         *,
         max_size: int | None = None,
     ) -> tuple[int, int] | None:
-        self.ensure_available()
+        executable = self._resolve_executable()
         target_path = target_path.resolve()
         target_path.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(
             prefix="rawtherapee-preview-", dir=target_path.parent
         ) as temp_dir:
             temporary_output = Path(temp_dir) / target_path.name
-            self._render(source_path, state_path, temporary_output, quality=self.preview_quality)
+            self._render(
+                source_path,
+                state_path,
+                temporary_output,
+                executable=executable,
+                quality=self.preview_quality,
+            )
             rendered_size = _image_dimensions(temporary_output)
             if max_size is None:
                 temporary_output.replace(target_path)
@@ -130,10 +138,16 @@ class RawTherapeeBackend:
         state_path: Path,
         target_path: Path,
     ) -> tuple[int, int] | None:
-        self.ensure_available()
+        executable = self._resolve_executable()
         target_path = target_path.resolve()
         target_path.parent.mkdir(parents=True, exist_ok=True)
-        self._render(source_path, state_path, target_path, quality=self.export_quality)
+        self._render(
+            source_path,
+            state_path,
+            target_path,
+            executable=executable,
+            quality=self.export_quality,
+        )
         return _image_dimensions(target_path)
 
     def _render(
@@ -142,10 +156,11 @@ class RawTherapeeBackend:
         state_path: Path,
         target_path: Path,
         *,
+        executable: str,
         quality: int,
     ) -> None:
         command = [
-            self.executable,
+            executable,
             "-o",
             str(target_path),
             "-Y",
@@ -161,10 +176,38 @@ class RawTherapeeBackend:
                 part.strip() for part in (completed.stdout, completed.stderr) if part.strip()
             )
             raise RenderFailedError(
-                f"{self.executable} exited with status {completed.returncode}.",
+                f"{executable} exited with status {completed.returncode}.",
                 hint=details or None,
             )
         self._require_output(target_path)
+
+    def _resolve_executable(self) -> str:
+        path_executable = shutil.which(self.executable)
+        if path_executable is not None:
+            return path_executable
+
+        configured = os.environ.get(RAWTHERAPEE_CLI_ENV)
+        if configured is None or not configured.strip():
+            raise BackendUnavailableError(
+                self.executable,
+                hint=(
+                    f"Install {self.executable} on PATH or set {RAWTHERAPEE_CLI_ENV} "
+                    "to the absolute executable path."
+                ),
+            )
+
+        candidate = Path(configured)
+        if not candidate.is_absolute():
+            raise BackendUnavailableError(
+                self.executable,
+                hint=f"{RAWTHERAPEE_CLI_ENV} must be an absolute path; got '{configured}'.",
+            )
+        if not candidate.is_file():
+            raise BackendUnavailableError(
+                self.executable,
+                hint=f"{RAWTHERAPEE_CLI_ENV} does not point to an existing file: '{configured}'.",
+            )
+        return str(candidate)
 
     def _output_args(self, target_path: Path, quality: int) -> list[str]:
         suffix = target_path.suffix.lower()

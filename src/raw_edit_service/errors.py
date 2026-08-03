@@ -34,11 +34,11 @@ class ValidationError(PhotoEditError):
 class BackendUnavailableError(PhotoEditError):
     """Raised when a configured backend executable cannot be executed."""
 
-    def __init__(self, executable: str) -> None:
+    def __init__(self, executable: str, hint: str | None = None) -> None:
         super().__init__(
             code="backend_unavailable",
             message=f"Required backend executable '{executable}' is not available.",
-            hint=f"Install {executable} and ensure it is on PATH.",
+            hint=hint or f"Install {executable} and ensure it is on PATH.",
         )
 
 
