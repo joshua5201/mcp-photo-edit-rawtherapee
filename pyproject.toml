@@ -15,6 +15,11 @@ dependencies = [
   "raw-edit-contracts>=0.1,<0.2",
 ]
 
+[project.urls]
+Homepage = "https://github.com/joshua5201/raw-edit-service"
+Repository = "https://github.com/joshua5201/raw-edit-service"
+Issues = "https://github.com/joshua5201/raw-edit-service/issues"
+
 [dependency-groups]
 dev = [
   "basedpyright>=1.31,<2",
