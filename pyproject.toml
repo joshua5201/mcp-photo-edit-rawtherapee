@@ -3,22 +3,22 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "raw-edit-service"
-version = "0.1.1"
-description = "Typed in-process and CLI RAW rendering service"
+name = "mcp-photo-edit-rawtherapee"
+version = "0.1.0"
+description = "Typed in-process and CLI RawTherapee adapter for mcp-photo-edit"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 requires-python = ">=3.12"
 dependencies = [
   "Pillow>=10,<13",
   "pydantic>=2.7,<3",
-  "raw-edit-contracts>=0.1,<0.2",
+  "mcp-photo-edit-core>=0.1,<0.2",
 ]
 
 [project.urls]
-Homepage = "https://github.com/joshua5201/raw-edit-service"
-Repository = "https://github.com/joshua5201/raw-edit-service"
-Issues = "https://github.com/joshua5201/raw-edit-service/issues"
+Homepage = "https://github.com/joshua5201/mcp-photo-edit-rawtherapee"
+Repository = "https://github.com/joshua5201/mcp-photo-edit-rawtherapee"
+Issues = "https://github.com/joshua5201/mcp-photo-edit-rawtherapee/issues"
 
 [dependency-groups]
 dev = [
@@ -30,10 +30,10 @@ dev = [
 ]
 
 [project.scripts]
-raw-edit-service = "raw_edit_service.__main__:main"
+mcp-photo-edit-rawtherapee = "mcp_photo_edit_rawtherapee.__main__:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/raw_edit_service"]
+packages = ["src/mcp_photo_edit_rawtherapee"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

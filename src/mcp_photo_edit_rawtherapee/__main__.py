@@ -6,7 +6,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from raw_edit_contracts import RenderRequest
+from mcp_photo_edit_core import RenderRequest
 
 from .service import RawEditService
 

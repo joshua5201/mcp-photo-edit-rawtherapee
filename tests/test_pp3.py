@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from raw_edit_service.models import AdjustmentState, CropAdjustment, RGBMixer
-from raw_edit_service.pp3 import build_pp3
+from mcp_photo_edit_rawtherapee.models import AdjustmentState, CropAdjustment, RGBMixer
+from mcp_photo_edit_rawtherapee.pp3 import build_pp3
 
 
 def test_build_pp3_contains_supported_exposure_fields() -> None:

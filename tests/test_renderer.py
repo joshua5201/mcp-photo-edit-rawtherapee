@@ -8,9 +8,9 @@ from pathlib import Path
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
-from raw_edit_service.errors import BackendUnavailableError
-from raw_edit_service.models import AdjustmentState, CropAdjustment, SourceImageInfo
-from raw_edit_service.renderer import RAWTHERAPEE_CLI_ENV, RawTherapeeBackend
+from mcp_photo_edit_rawtherapee.errors import BackendUnavailableError
+from mcp_photo_edit_rawtherapee.models import AdjustmentState, CropAdjustment, SourceImageInfo
+from mcp_photo_edit_rawtherapee.renderer import RAWTHERAPEE_CLI_ENV, RawTherapeeBackend
 
 
 def test_render_invokes_rawtherapee_with_pp3(monkeypatch: MonkeyPatch, tmp_path: Path) -> None:
@@ -29,8 +29,8 @@ def test_render_invokes_rawtherapee_with_pp3(monkeypatch: MonkeyPatch, tmp_path:
         output_path.write_bytes(b"jpg")
         return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
 
-    monkeypatch.setattr("raw_edit_service.renderer.shutil.which", fake_which)
-    monkeypatch.setattr("raw_edit_service.renderer.subprocess.run", fake_run)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.shutil.which", fake_which)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.subprocess.run", fake_run)
     source = tmp_path / "source.nef"
     profile = tmp_path / "session.pp3"
     target = tmp_path / "preview.jpg"
@@ -55,7 +55,7 @@ def test_path_takes_precedence_over_environment(monkeypatch: MonkeyPatch, tmp_pa
         assert name == "rawtherapee-cli"
         return path_executable
 
-    monkeypatch.setattr("raw_edit_service.renderer.shutil.which", fake_which)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.shutil.which", fake_which)
 
     backend = RawTherapeeBackend()
 
@@ -71,7 +71,7 @@ def test_absolute_environment_path_is_fallback(monkeypatch: MonkeyPatch, tmp_pat
     def fake_which(name: str) -> None:
         assert name == "rawtherapee-cli"
 
-    monkeypatch.setattr("raw_edit_service.renderer.shutil.which", fake_which)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.shutil.which", fake_which)
 
     backend = RawTherapeeBackend()
 
@@ -85,7 +85,7 @@ def test_environment_path_must_be_absolute(monkeypatch: MonkeyPatch, configured:
     def fake_which(name: str) -> None:
         assert name == "rawtherapee-cli"
 
-    monkeypatch.setattr("raw_edit_service.renderer.shutil.which", fake_which)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.shutil.which", fake_which)
 
     with pytest.raises(BackendUnavailableError) as error:
         RawTherapeeBackend().ensure_available()
@@ -101,7 +101,7 @@ def test_environment_path_must_point_to_a_file(monkeypatch: MonkeyPatch, tmp_pat
     def fake_which(name: str) -> None:
         assert name == "rawtherapee-cli"
 
-    monkeypatch.setattr("raw_edit_service.renderer.shutil.which", fake_which)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.shutil.which", fake_which)
 
     with pytest.raises(BackendUnavailableError) as error:
         RawTherapeeBackend().ensure_available()
@@ -116,7 +116,7 @@ def test_missing_path_and_environment_reports_both_options(monkeypatch: MonkeyPa
     def fake_which(name: str) -> None:
         assert name == "rawtherapee-cli"
 
-    monkeypatch.setattr("raw_edit_service.renderer.shutil.which", fake_which)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.shutil.which", fake_which)
 
     with pytest.raises(BackendUnavailableError) as error:
         RawTherapeeBackend().ensure_available()
@@ -136,8 +136,8 @@ def test_render_rejects_missing_output(monkeypatch: MonkeyPatch, tmp_path: Path)
         del check, capture_output, text
         return subprocess.CompletedProcess(command, 0, "", "")
 
-    monkeypatch.setattr("raw_edit_service.renderer.shutil.which", fake_which)
-    monkeypatch.setattr("raw_edit_service.renderer.subprocess.run", fake_run)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.shutil.which", fake_which)
+    monkeypatch.setattr("mcp_photo_edit_rawtherapee.renderer.subprocess.run", fake_run)
     source = tmp_path / "source.nef"
     profile = tmp_path / "session.pp3"
     source.write_bytes(b"raw")

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from raw_edit_contracts import (
+from mcp_photo_edit_core import (
     DocumentState,
     ErrorCode,
     RenderKind,
@@ -12,8 +12,8 @@ from raw_edit_contracts import (
     SourceAsset,
 )
 
-from raw_edit_service.models import AdjustmentState, SourceImageInfo
-from raw_edit_service.service import RawEditService
+from mcp_photo_edit_rawtherapee.models import AdjustmentState, SourceImageInfo
+from mcp_photo_edit_rawtherapee.service import RawEditService
 
 
 class FakeRenderer:

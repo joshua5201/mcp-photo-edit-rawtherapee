@@ -5,14 +5,14 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Protocol, cast
 
-from PIL import Image
-from raw_edit_contracts import (
+from mcp_photo_edit_core import (
     DiagnosticDimensions,
     DiagnosticLumaSummary,
     DiagnosticRGBBalanceSummary,
     DiagnosticSaturationSummary,
     DiagnosticSummary,
 )
+from PIL import Image
 
 RGBPixel = tuple[int, int, int]
 
