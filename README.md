@@ -32,10 +32,13 @@ mcp-photo-edit-rawtherapee request.json
 Development gates:
 
 ```shell
-uv sync
-uv run ruff format --check .
-uv run ruff check .
-uv run basedpyright
-uv run pytest
-uv run python -m build
+uv sync --frozen --group dev
+uv run --frozen ruff format --check .
+uv run --frozen ruff check .
+uv run --frozen basedpyright
+uv run --frozen pytest
+uv build --no-sources
 ```
+
+Development and CI require uv `0.11.32`; the checked-in `uv.lock` resolves only
+published dependencies (the project itself is the expected editable root entry).
