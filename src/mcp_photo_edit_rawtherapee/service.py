@@ -8,8 +8,8 @@ import tempfile
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
-from pydantic import JsonValue
-from raw_edit_contracts import (
+from mcp_photo_edit_core import (
+    EditBackend,
     ErrorCode,
     ErrorEnvelope,
     FileArtifact,
@@ -21,6 +21,7 @@ from raw_edit_contracts import (
     RenderResult,
     ServiceResponse,
 )
+from pydantic import JsonValue
 
 from .diagnostics import ImageDiagnostics
 from .errors import BackendUnavailableError, PhotoEditError, ValidationError
@@ -30,12 +31,12 @@ from .renderer import RawTherapeeBackend, RenderBackend
 
 def _adapter_version() -> str:
     try:
-        return version("raw-edit-service")
+        return version("mcp-photo-edit-rawtherapee")
     except PackageNotFoundError:
         return "0.1.0"
 
 
-class RawEditService:
+class RawEditService(EditBackend):
     """Execute typed render requests using one injected renderer adapter."""
 
     def __init__(

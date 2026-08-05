@@ -1,6 +1,6 @@
-# raw-edit-service
+# mcp-photo-edit-rawtherapee
 
-RAW rendering implementation behind the public `raw-edit-contracts` models. The
+RawTherapee implementation behind the public `mcp-photo-edit-core` models. The
 same synchronous service can be called directly in-process or through a small JSON
 CLI boundary.
 
@@ -14,19 +14,19 @@ Windows PowerShell example when RawTherapee is installed but not on `PATH`:
 
 ```powershell
 $env:RAWTHERAPEE_CLI = "C:\Program Files\RawTherapee\5.12\rawtherapee-cli.exe"
-raw-edit-service request.json
+mcp-photo-edit-rawtherapee request.json
 ```
 
 Relative values and paths that do not point to an existing file are rejected.
 
 ```python
-from raw_edit_service import RawEditService
+from mcp_photo_edit_rawtherapee import RawEditService
 
 response = RawEditService().execute(request)
 ```
 
 ```shell
-raw-edit-service request.json
+mcp-photo-edit-rawtherapee request.json
 ```
 
 Development gates:

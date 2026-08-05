@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pydantic import BaseModel
-from raw_edit_contracts import (
+from mcp_photo_edit_core import (
     AdjustmentState as PublicAdjustmentState,
 )
-from raw_edit_contracts import (
+from mcp_photo_edit_core import (
     CropRect,
     DiagnosticDimensions,
     DiagnosticLumaSummary,
@@ -18,7 +17,8 @@ from raw_edit_contracts import (
     DocumentState,
     RGBMixer,
 )
-from raw_edit_contracts.models import OrientationDegrees
+from mcp_photo_edit_core.models import OrientationDegrees
+from pydantic import BaseModel
 
 
 class AdjustmentState(PublicAdjustmentState):
